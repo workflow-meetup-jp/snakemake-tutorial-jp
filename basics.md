@@ -293,17 +293,17 @@ $ snakemake -np sorted_reads/B.bam
 ```
 
 you will see how Snakemake wants to run first the rule `bwa_map` and then the rule `samtools_sort` to create the desired target file: as mentioned before, the dependencies are resolved automatically by matching file names.
-日本語
+
 Snakemakeがどのように最初にルール `bwa_map` を実行し、次にルール `samtools_sort` を実行して、目的のターゲットファイルを作成する方法がわかるでしょう: 前述のように、依存関係はファイル名を照合することで自動的に解決されます。
 
 ## Step 4: Indexing read alignments and visualizing the DAG of jobs
 
 Next, we need to use samtools again to index the sorted read alignments for random access.
-日本語
+
 次に、samtoolsを再度使用して、ランダムアクセス用にソートされた読み取りアライメントにインデックスを付ける必要があります。
 
 This can be done with the following rule:
-日本語
+
 これは、次のルールで実行できます:
 
 ```python
@@ -316,4 +316,23 @@ rule samtools_index:
         "samtools index {input}"
 ```
 
-### Note
+> ### Note
+> 
+> Snakemake uses the Python format mini language to format shell commands.
+> Sometimes you have to use braces for something else in a shell command.
+> In that case, you have to escape them by doubling, e.g.,
+> ``ls {{A,B}}.txt``.
+> 
+> Snakemakeは、Python形式のミニ言語を使用してシェルコマンドをフォーマットします。
+> シェルコマンドで他の何かに中括弧を使用しなければならない場合があります。
+> その場合、中括弧を二重にしてそれらを回避する必要があります。
+> 例えば ``ls {{A,B}}.txt``。
+
+Having three steps already, it is a good time to take a closer look at the resulting DAG of jobs. By executing
+
+すでに3つのステップがあるので、結果として得られるジョブのDAGを詳しく調べる良い機会です。下記を実行するとDAGができます。
+
+```
+$ snakemake --dag sorted_reads/{A,B}.bam.bai | dot -Tsvg > dag.svg
+```
+
